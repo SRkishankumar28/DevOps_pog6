@@ -1,13 +1,18 @@
 ---
 - name: Deploy Maven Artifact
   hosts: localhost
-  become: no
+  become: yes
 
   tasks:
+    - name: Ensure Destination
+      file:
+            path: /opt/app
+            state: directory
+            mode: '0755'
     - name: Copy the artifact to the deployment directory
       copy:
         src: "/var/lib/jenkins/workspace/pog8/target/maven-example-1.0-SNAPSHOT.jar"
-        dest: "/opt/maven-example.jar"
+        dest: "/opt/app/maven-example.jar"
 
     - name: Run Application
       shell: nohup java -jar /opt/deployment/maven-example.jar &
