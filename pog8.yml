@@ -1,18 +1,19 @@
 ---
 - name: Deploy Maven Artifact
-  hosts: web
+  hosts: localhost
   become: no
 
   tasks:
-    - name: Ensure Destination
+    - name: Create deployment directory
       file:
-            path: /opt/app
-            state: directory
-            mode: '0755'
-    - name: Copy the artifact to the deployment directory
-      copy:
-        src: "/var/lib/jenkins/workspace/pog8/target/maven-example-1.0-SNAPSHOT.jar"
-        dest: "/opt/app/maven-example.jar"
+        path: /tmp/deployment
+        state: directory
+        mode: '0755'
 
-    - name: Run Application
-      shell: nohup java -jar /opt/deployment/maven-example.jar &
+    - name: Copy JAR file
+      copy:
+        src: "target/maven-example-1.0-SNAPSHOT.jar"
+        dest: "/tmp/deployment/maven-example-1.0-SNAPSHOT.jar"
+
+    - name: Run application
+      shell: nohup java -jar /opt/deployment/maven-example-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
